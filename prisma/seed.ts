@@ -1,17 +1,13 @@
-import { PrismaClient, Prisma } from '@/generated/prisma'
+import { PrismaClient } from '@/generated/prisma'
+import { seedUsers } from './seeds/users'
+import { seedGames } from './seeds/games'
 
 const prisma = new PrismaClient()
 
 async function main() {
-  const gameData: Prisma.GameCreateInput[] = Array.from({ length: 100 }, (_, i) => ({
-    name: `Game ${i + 1}`,
-  }))
+  const users = await seedUsers(prisma, 100)
 
-  await prisma.game.createMany({
-    data: gameData,
-  })
-
-  console.log(`🌱 Inserted ${gameData.length} games into the database.`)
+  await seedGames(prisma, users, 30)
 }
 
 main()

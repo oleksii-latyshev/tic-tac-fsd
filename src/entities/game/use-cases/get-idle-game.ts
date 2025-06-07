@@ -1,5 +1,5 @@
-import { GameIdleEntity, GameStatuses } from '@/features/game/domain'
-import { GameRepository } from '@/features/game/repositories/game.repository'
+import { GameIdleEntity, GameStatuses } from '@/entities/game/domain'
+import { GameRepository } from '@/entities/game/repositories/game.repository'
 
 export async function getIdleGames(): Promise<GameIdleEntity[]> {
   const games = await GameRepository.gamesList({

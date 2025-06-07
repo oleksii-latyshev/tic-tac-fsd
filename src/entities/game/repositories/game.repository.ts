@@ -5,7 +5,7 @@ import {
   GameOverDrawEntity,
   GameOverEntity,
   GameStatuses,
-} from '@/features/game/domain'
+} from '@/entities/game/domain'
 import { Game, Prisma, User } from '@/generated/prisma'
 import { prisma } from '@/shared/lib/db'
 import { removePasswordHash } from '@/shared/lib/password'
@@ -83,6 +83,26 @@ async function gamesList({ where }: { where: Prisma.GameWhereInput }): Promise<G
   return games.map(dbGameToGameEntity)
 }
 
+async function createGame({ id, creator }: GameIdleEntity): Promise<GameEntity> {
+  const createdGame = await prisma.game.create({
+    data: {
+      status: GameStatuses.IDLE,
+      id,
+      field: Array(9).fill(null),
+      players: {
+        connect: [{ id: creator.id }],
+      },
+    },
+    include: {
+      players: true,
+      winner: true,
+    },
+  })
+
+  return dbGameToGameEntity(createdGame)
+}
+
 export const GameRepository = {
   gamesList,
+  createGame,
 }
